@@ -1,0 +1,6 @@
+node_modules/
+.env
+models/compra.model.js
+routes/compra.route.js
+controllers/compra.controller.js
+
