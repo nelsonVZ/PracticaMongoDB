@@ -9,9 +9,31 @@ const getCategoria = async(req, res) => {
         categorias
     });
 }
-
+const listarProdDeUnaCategoria = async(req, res = response) => {
+    const cateID = req.params.id;
+    try {
+        const productos = await Categoria.findById(cateID).populate('productos', 'nombre precioVenta stock descripcion');
+        if (!productos) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'No existe una categoria con ese id'
+            });
+        }
+        //const productos = categoriaDB.populate('productos')
+        res.json({
+            ok: true,
+            productos: productos
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            mensaje: 'Error en el servidor, revisar logs'
+        });
+    }
+}
 const crearCategoria = async(req, res = response) => {
-    const { nombre, descripcion } = req.body;
+    const { nombre } = req.body;
     try {
         const existeCategoria = await Categoria.findOne({ nombre });
         if (existeCategoria) {
@@ -38,9 +60,9 @@ const crearCategoria = async(req, res = response) => {
 }
 
 const actualizarCategoria = async(req, res = response) => {
-    const cid = req.params.id;
+    const cateID = req.params.id;
     try {
-        const categoriaDB = await Categoria.findById(cid);
+        const categoriaDB = await Categoria.findById(cateID);
         if (!categoriaDB) {
             return res.status(404).json({
                 ok: false,
@@ -61,7 +83,7 @@ const actualizarCategoria = async(req, res = response) => {
         }
 
         campos.nombre = nombre;
-        const categoriaActualizada = await Categoria.findByIdAndUpdate(cid, campos, { new: true });
+        const categoriaActualizada = await Categoria.findByIdAndUpdate(cateID, campos, { new: true });
         res.json({
             ok: true,
             categoria: categoriaActualizada
@@ -76,16 +98,16 @@ const actualizarCategoria = async(req, res = response) => {
 }
 
 const eliminarCategoria = async(req, res = response) => {
-    const cid = req.params.id;
+    const cateID = req.params.id;
     try {
-        const categoriaDB = await Categoria.findById(cid);
+        const categoriaDB = await Categoria.findById(cateID);
         if (!categoriaDB) {
             return res.status(400).json({
                 ok: false,
                 mensaje: 'No existe una categoria con ese id'
             });
         }
-        await Categoria.findByIdAndDelete(cid);
+        await Categoria.findByIdAndDelete(cateID);
         res.json({
             ok: true,
             mensaje: 'Categoria eliminada de la BD'
@@ -98,9 +120,12 @@ const eliminarCategoria = async(req, res = response) => {
         });
     }
 }
+
+
 module.exports = {
     getCategoria,
     crearCategoria,
     actualizarCategoria,
-    eliminarCategoria
+    eliminarCategoria,
+    listarProdDeUnaCategoria
 }

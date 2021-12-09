@@ -7,15 +7,17 @@ const CategoriaSchema = Schema({
         unique: true
     },
     descripcion: {
-        type: String,
-        default: 'Categoria'
-    }
-
+        type: String
+    },
+    productos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Producto'
+    }],
 });
 
 CategoriaSchema.method('toJSON', function() {
     const { __v, _id, ...object } = this.toObject();
-    object.cid = _id;
+    object.cateID = _id;
     return object;
 });
 

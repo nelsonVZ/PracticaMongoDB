@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
-const { getCategoria, crearCategoria, actualizarCategoria, eliminarCategoria } = require('../controllers/categoria.controller');
+const { getCategoria, crearCategoria, actualizarCategoria, eliminarCategoria, listarProdDeUnaCategoria } = require('../controllers/categoria.controller');
 const router = Router();
 
 router.get('/', getCategoria);
@@ -22,6 +22,8 @@ router.put('/:id', [
     ],
     actualizarCategoria
 );
+
+router.get('/:id', listarProdDeUnaCategoria);
 
 router.delete('/:id', eliminarCategoria);
 module.exports = router;

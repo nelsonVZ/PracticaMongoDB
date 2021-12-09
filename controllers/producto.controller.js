@@ -1,6 +1,7 @@
 const { response } = require('express');
 
 const Producto = require('../models/producto.model');
+const Categoria = require('../models/categoria.model');
 
 const getProductos = async(req, res = response) => {
 
@@ -25,9 +26,17 @@ const crearProducto = async(req, res = response) => {
                 mensaje: 'El codigo ya ha sido reguistrado'
             });
         }
+
         const producto = new Producto(req.body);
 
         await producto.save();
+
+        //Buscamos la categoria
+        const cate = await Categoria.findById(categoria);
+        // Asignar el producto dentro del array de productos de categoria
+        cate.productos.push(producto);
+        // guardar la categoria con su producto
+        await cate.save();
 
         res.json({
             ok: true,
